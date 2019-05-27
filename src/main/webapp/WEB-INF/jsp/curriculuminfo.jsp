@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="sh" uri="http://shiro.apache.org/tags" %>
 <html>
 <head>
     <title>Title</title>
@@ -49,7 +50,9 @@
         <th width="15%">课程名</th>
         <th width="20%">授课老师</th>
         <th width="15%">学生成绩</th>
+        <sh:hasRole name="admin">
         <th width="15%">操作</th>
+        </sh:hasRole>
     </tr>
     <tr id="ajaxData">
 
@@ -78,8 +81,8 @@
             $("#two").show()
             $.each(data.pageData,function (i,value) {
                 $("#two").append("<tr calss='hello'><td>" + value.name + "</td><td>" + value.cname + "</td><td>" + value.tname + "</td><td>" + value.score + "</td>" + "<td><div class='button-group'>" +
-                    "<a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
-                    "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br>")
+                    "<sh:hasRole name='admin'><a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
+                    "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br></sh:hasRole>")
 
             })
             $("#curPage").text("当前为第"+(data.curPage)+"页")
@@ -112,8 +115,8 @@
                 $.each(data.pageData,function (i,value) {
 
                     $("#two").append("<tr calss='hello'><td>" + value.name + "</td><td>" + value.cname + "</td><td>" + value.tname + "</td><td>" + value.score + "</td>" + "<td><div class='button-group'>" +
-                        "<a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
-                        "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br>")
+                        "<sh:hasRole name='admin'><a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
+                        "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br></sh:hasRole>")
 
                 })
                 $("#curPage").text("当前为第"+(data.curPage)+"页")
@@ -147,8 +150,8 @@
                 $.each(data.pageData,function (i,value) {
 
                     $("#two").append("<tr calss='hello'><td>" + value.name + "</td><td>" + value.cname + "</td><td>" + value.tname + "</td><td>" + value.score + "</td>" + "<td><div class='button-group'>" +
-                        "<a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
-                        "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br>")
+                        "<sh:hasRole name='admin'><a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
+                        "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br></sh:hasRole>")
 
                 })
                 $("#curPage").text("当前为第"+(data.curPage)+"页")
@@ -182,8 +185,8 @@
                 $.each(data.pageData,function (i,value) {
 
                     $("#two").append("<tr calss='hello'><td>" + value.name + "</td><td>" + value.cname + "</td><td>" + value.tname + "</td><td>" + value.score + "</td>" + "<td><div class='button-group'>" +
-                        "<a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
-                        "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br>")
+                        "<sh:hasRole name='admin'><a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
+                        "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br></sh:hasRole>")
 
                 })
                 $("#curPage").text("当前为第"+(data.curPage)+"页")
@@ -211,8 +214,8 @@
                 $.each(data.pageData,function (i,value) {
 
                     $("#two").append("<tr calss='hello'><td>" + value.name + "</td><td>" + value.cname + "</td><td>" + value.tname + "</td><td>" + value.score + "</td>" + "<td><div class='button-group'>" +
-                        "<a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
-                        "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br>")
+                        "<sh:hasRole name='admin'><a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
+                        "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br></sh:hasRole>")
 
                 })
                 $("#curPage").text("当前为第"+(data.curPage)+"页")
@@ -245,7 +248,7 @@
         $("#two").empty();
         $("#two").append("<tr> <th width='10%'>学生名称</th><th width='15%'>课程名</th>" +
             "<th width='20%'>授课老师</th><th width='15%'>学生成绩</th>" +
-            "<th width='15%'>操作</th></tr>")
+            "<sh:hasRole name="admin"><th width='15%'>操作</th></tr></sh:hasRole>")
 
 
         //进行动态查询的方法
@@ -266,8 +269,8 @@
                 $("#two").show()
                 $.each(data.pageData,function (i,value) {
                     $("#two").append("<tr calss='hello'><td>" + value.name + "</td><td>" + value.cname + "</td><td>" + value.tname + "</td><td>" + value.score + "</td>" + "<td><div class='button-group'>" +
-                        "<a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
-                        "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br>")
+                        "<sh:hasRole name='admin'><a class='button border-main' href='javascript:void(0)' onclick='return modify("+value.id+","+value.cid+")'><span class='icon-edit'></span> 修改</a>" +
+                        "<a class='button border-red' href='javascript:void(0)' onclick='return del("+value.id+","+value.cid+")'><span class='icon-trash-o'></span> 删除</a></div></td></tr>" + "<br></sh:hasRole>")
 
                 })
                 $("#curPage").val(data.curPage)

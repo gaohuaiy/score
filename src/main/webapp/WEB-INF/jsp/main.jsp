@@ -23,7 +23,7 @@
     <ul style="display:block">
         <sh:hasRole name="admin">
             <%----%>
-        <li><a href="javascript:void(0)" target="right" id="userManage"><span class="icon-caret-right"></span>用户管理</a></li>
+        <li><a href="info" target="right" id="userManage"><span class="icon-caret-right"></span>用户管理</a></li>
             </sh:hasRole>
             <sh:hasRole name="productManager">
         <li><a href="<%=request.getContextPath()%>/curriculum/info" target="right"><span class="icon-caret-right"></span>成绩管理</a></li>
@@ -37,9 +37,7 @@
     </sh:hasRole>
 </div>
 <script type="text/javascript">
-    $("#userManage").click(function () {
-        window.location="user/info";
-    })
+
     $(function(){
         $(".leftnav h2").click(function(){
             $(this).next().slideToggle(200);
