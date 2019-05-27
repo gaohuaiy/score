@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+<!-- 自动扫描，这里的base-package需要改成你自己的 -->
+    <context:component-scan base-package="com.grademanagement" />
+	<mvc:annotation-driven/>
+	<context:annotation-config />
+	<!-- 配置 读取properties文件 jdbc.properties -->
+	<context:property-placeholder location="classpath:jdbc.properties" />
+	<!-- 配置 数据源 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" >
+		<property name="driverClassName" value="${jdbc.driverClass}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+
+
+	</bean>
+	<!-- 配置MyBatis session工厂 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+    	<property name="mapperLocations" value="classpath*:com/grademanagement/mapper/*.xml"></property>
+    </bean>
+	<!--4 自动扫描对象关系映射 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!--指定会话工厂，如果当前上下文中只定义了一个则该属性可省去 -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+		<!-- 指定要自动扫描接口的基础包，实现接口 -->
+		<property name="basePackage" value="com.grademanagement.mapper"></property>
+	</bean>
+    
+     <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->  
+   <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+	<!-- 开启注解方式声明事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!-- 配置shiro框架的过滤器工厂bean -->
+	<bean id="shiroFilter"
+		  class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/index.jsp" />
+		<property name="successUrl" value="/successUrl.jsp" />
+		<!-- 指定URL拦截策略 ,静态资源放行，登录放行，其他的需要认证也就是登录-->
+		<property name="filterChainDefinitions">
+			<value>
+				/css/**=anon
+				/js/**=anon
+				/images/**=anon
+				/index.jsp=anon
+				/user/login=anon
+				<!--用户退出的url-->
+				/logout.action = logout
+				/**=authc
+			</value>
+		</property>
+	</bean>
+	<!-- 配置安全管理器 -->
+	<bean id="securityManager"
+		  class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="userRealm" />
+		<!-- 注入缓存管理器 -->
+		<!--<property name="cacheManager" ref="cacheManager" />-->
+	</bean>
+	<!-- 注册自定义realm -->
+	<bean id="userRealm"
+		  class="com.grademanagement.realm.UserRealm" >
+		<!-- 凭证匹配器 -->
+		<property name="credentialsMatcher">
+			<bean
+					class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5" />
+				<property name="hashIterations" value="1" />
+			</bean>
+		</property>
+
+	</bean>
+	<!-- 注册缓存管理器 -->
+	<!--<bean id="cacheManager"
+		  class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		&lt;!&ndash; 注入ehcache配置文件 &ndash;&gt;
+		<property name="cacheManagerConfigFile"
+				  value="classpath:ehcache.xml" />
+	</bean>-->
+	<!-- 开启shiro注解加到springmvc.xml中去了，因为不加那里会导致注解失效 -->
+	<!-- 1.配置lifecycleBeanPostProcessor，可以在Spring IOC容器中调用shiro的生命周期方法. -->
+	<bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor"
+		  id="lifecycleBeanPostProcessor" />
+
+	<!-- 2.启用Spring IOC容器Shiro注解，但必须配置了lifecycleBeanPostProcessor后才可以使用 -->
+	<bean
+			class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+			depends-on="lifecycleBeanPostProcessor" />
+
+	<!-- 3.开启Spring AOC Shiro注解支持 -->
+	<bean
+			class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+
+
+
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<!-- 配置角色出错界面-->
+				<prop key="org.apache.shiro.authz.UnauthorizedException">UnauthorizedException</prop>
+				<prop key="org.apache.shiro.authz.UnauthenticatedException">UnauthenticatedException</prop>
+			</props>
+		</property>
+	</bean>
+
+
+
+</beans>
